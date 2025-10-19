@@ -18,67 +18,94 @@ const maxNumberOfAttempts = 5;
 // <- 32
 // > getRandomNumber(1, 50)
 // <- 11
+
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function hideAllMessages(){
+  for(let i = 0; i < messages.length; i++) {
+    messages[i].style.display = 'none';
+  }
+}
+
+function pluralize(n, word) {
+  return n === 1 ? word : `${word}s`;
+}
+
+function disableInput() {
+  submitButton.disabled = true;
+  guessInput.disabled = true;
+}
+
+function enableInput() {
+  submitButton.disabled = false;
+  guessInput.disabled = false;
+}
+
+
 function checkGuess() {
   // Get value from guess input element
   const guess = parseInt(guessInput.value, 10);
+
+  if (Number.isNaN(guess)) {
+    alert('Please enter a number.');
+    return;
+  }
+
   attempts = attempts + 1;
 
   hideAllMessages();
 
+  // Correct guess
   if (guess === targetNumber) {
     numberOfGuessesMessage.style.display = '';
-    numberOfGuessesMessage.innerHTML = `You made ${attempts} guesses`;
+    numberOfGuessesMessage.innerHTML = `You guessed ${guess}. <br> ${remainingAttempts} ${pluralize(remainingAttempts, 'guess')} remaining`;
 
     correctMessage.style.display = '';
-
+    disableInput();
     submitButton.disabled = true;
     guessInput.disabled = true;
+    return;
   }
-
+  // Incorrect guess path
   if (guess !== targetNumber) {
     if (guess < targetNumber) {
       tooLowMessage.style.display = '';
     } else {
-      tooLowMessage.style.display = '';
+      tooHighMessage.style.display = '';
     }
 
     const remainingAttempts = maxNumberOfAttempts - attempts;
 
     numberOfGuessesMessage.style.display = '';
-    numberOfGuessesMessage.innerHTML = `You guessed ${guess}. <br> ${remainingAttempts} guesses remaining`;
+    numberOfGuessesMessage.innerHTML = `You guessed ${guess}. <br> ${remainingAttempts} ${pluralize(remaining, 'guess')} remaining`;
   }
 
-  if (attempts ==== maxNumberOfAttempts) {
-    submitButton.disabled = true;
-    guessInput.disabled = true;
+  // Out of tries
+  if (attempts === maxNumberOfAttempts) {
+    disableInput();
+    maxGuessesMessage.style.display = '';
+    maxGuessesMessage.textContent = '0 guesses remaining';
   }
 
   guessInput.value = '';
-
   resetButton.style.display = '';
+  
 }
 
-function hideAllMessages() {
-  for (let elementIndex = 0; elementIndex <= messages.length; elementIndex++) {
-    messages[elementIndex].style.display = 'none';
-  }
-}
 
-funtion setup() {
+function setup() {
   // Get random number
   targetNumber = getRandomNumber(1, 100);
   console.log(`target number: ${targetNumber}`);
 
   // Reset number of attempts
-  maxNumberOfAttempts = 0;
+  attempts = 0;
 
   // Enable the input and submit button
-  submitButton.disabeld = false;
-  guessInput.disabled = false;
+  enableInput();
+  guessInput.value = '';
 
   hideAllMessages();
   resetButton.style.display = 'none';
