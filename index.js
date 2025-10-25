@@ -29,10 +29,6 @@ function hideAllMessages(){
   }
 }
 
-function pluralize(n, word) {
-  return n === 1 ? word : `${word}s`;
-}
-
 function disableInput() {
   submitButton.disabled = true;
   guessInput.disabled = true;
@@ -54,13 +50,15 @@ function checkGuess() {
   }
 
   attempts = attempts + 1;
+  const remainingAttempts = maxNumberOfAttempts - attempts;
+
 
   hideAllMessages();
 
   // Correct guess
   if (guess === targetNumber) {
     numberOfGuessesMessage.style.display = '';
-    numberOfGuessesMessage.innerHTML = `You guessed ${guess}. <br> ${remainingAttempts} ${pluralize(remainingAttempts, 'guess')} remaining`;
+    numberOfGuessesMessage.innerHTML = `You guessed ${guess}. <br> ${remainingAttempts} guesses remaining`;
 
     correctMessage.style.display = '';
     disableInput();
@@ -75,11 +73,8 @@ function checkGuess() {
     } else {
       tooHighMessage.style.display = '';
     }
-
-    const remainingAttempts = maxNumberOfAttempts - attempts;
-
     numberOfGuessesMessage.style.display = '';
-    numberOfGuessesMessage.innerHTML = `You guessed ${guess}. <br> ${remainingAttempts} ${pluralize(remaining, 'guess')} remaining`;
+    numberOfGuessesMessage.innerHTML = `You guessed ${guess}. <br> ${remainingAttempts} guesses remaining`;
   }
 
   // Out of tries
